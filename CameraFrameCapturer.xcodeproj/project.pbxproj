@@ -12,8 +12,7 @@
 		7FCDE92B1EF99B51006AAEDE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FCDE9291EF99B51006AAEDE /* Main.storyboard */; };
 		7FCDE92D1EF99B51006AAEDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FCDE92C1EF99B51006AAEDE /* Assets.xcassets */; };
 		7FCDE9301EF99B51006AAEDE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FCDE92E1EF99B51006AAEDE /* LaunchScreen.storyboard */; };
-		7FCDE93B1EF99B51006AAEDE /* CameraFrameCapturerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCDE93A1EF99B51006AAEDE /* CameraFrameCapturerTests.swift */; };
-		7FCDE9461EF99B51006AAEDE /* CameraFrameCapturerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCDE9451EF99B51006AAEDE /* CameraFrameCapturerUITests.swift */; };
+		7FCDE9541EF99FDF006AAEDE /* CameraFrameCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCDE9531EF99FDF006AAEDE /* CameraFrameCapturer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,11 +41,8 @@
 		7FCDE92F1EF99B51006AAEDE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7FCDE9311EF99B51006AAEDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7FCDE9361EF99B51006AAEDE /* CameraFrameCapturerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CameraFrameCapturerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7FCDE93A1EF99B51006AAEDE /* CameraFrameCapturerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraFrameCapturerTests.swift; sourceTree = "<group>"; };
-		7FCDE93C1EF99B51006AAEDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7FCDE9411EF99B51006AAEDE /* CameraFrameCapturerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CameraFrameCapturerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7FCDE9451EF99B51006AAEDE /* CameraFrameCapturerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraFrameCapturerUITests.swift; sourceTree = "<group>"; };
-		7FCDE9471EF99B51006AAEDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7FCDE9531EF99FDF006AAEDE /* CameraFrameCapturer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraFrameCapturer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +74,6 @@
 			isa = PBXGroup;
 			children = (
 				7FCDE9241EF99B51006AAEDE /* CameraFrameCapturer */,
-				7FCDE9391EF99B51006AAEDE /* CameraFrameCapturerTests */,
-				7FCDE9441EF99B51006AAEDE /* CameraFrameCapturerUITests */,
 				7FCDE9231EF99B51006AAEDE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -99,30 +93,13 @@
 			children = (
 				7FCDE9251EF99B51006AAEDE /* AppDelegate.swift */,
 				7FCDE9271EF99B51006AAEDE /* ViewController.swift */,
+				7FCDE9531EF99FDF006AAEDE /* CameraFrameCapturer.swift */,
 				7FCDE9291EF99B51006AAEDE /* Main.storyboard */,
 				7FCDE92C1EF99B51006AAEDE /* Assets.xcassets */,
 				7FCDE92E1EF99B51006AAEDE /* LaunchScreen.storyboard */,
 				7FCDE9311EF99B51006AAEDE /* Info.plist */,
 			);
 			path = CameraFrameCapturer;
-			sourceTree = "<group>";
-		};
-		7FCDE9391EF99B51006AAEDE /* CameraFrameCapturerTests */ = {
-			isa = PBXGroup;
-			children = (
-				7FCDE93A1EF99B51006AAEDE /* CameraFrameCapturerTests.swift */,
-				7FCDE93C1EF99B51006AAEDE /* Info.plist */,
-			);
-			path = CameraFrameCapturerTests;
-			sourceTree = "<group>";
-		};
-		7FCDE9441EF99B51006AAEDE /* CameraFrameCapturerUITests */ = {
-			isa = PBXGroup;
-			children = (
-				7FCDE9451EF99B51006AAEDE /* CameraFrameCapturerUITests.swift */,
-				7FCDE9471EF99B51006AAEDE /* Info.plist */,
-			);
-			path = CameraFrameCapturerUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,6 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FCDE9281EF99B51006AAEDE /* ViewController.swift in Sources */,
+				7FCDE9541EF99FDF006AAEDE /* CameraFrameCapturer.swift in Sources */,
 				7FCDE9261EF99B51006AAEDE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,7 +249,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FCDE93B1EF99B51006AAEDE /* CameraFrameCapturerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,7 +256,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FCDE9461EF99B51006AAEDE /* CameraFrameCapturerUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
