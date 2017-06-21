@@ -17,6 +17,10 @@ class ViewController: UIViewController, CameraFrameCapturerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+
+        // listen notification of device orientation changes
+        NotificationCenter.default.addObserver(self, selector: #selector(deviceOrientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+
         cameraFrameCapturer = CameraFrameCapturer(withDelegate: self)
     }
 
@@ -35,6 +39,13 @@ class ViewController: UIViewController, CameraFrameCapturerDelegate {
         cameraFrameCapturer?.stop()
 
         super.viewWillDisappear(animated)
+    }
+
+    func deviceOrientationDidChange() {
+        // iPhone doesn't support .portraitUpsideDown by default
+        if UIDevice.current.orientation != .portraitUpsideDown || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad {
+            cameraFrameCapturer?.deviceOrientation = UIDevice.current.orientation
+        }
     }
 
     func didCaptured(image: UIImage) {

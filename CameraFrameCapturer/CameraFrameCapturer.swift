@@ -31,22 +31,38 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     var cameraPosition = AVCaptureDevicePosition.front
 
     // video quality
-    var videoQuality = AVCaptureSessionPresetMedium
+    var videoQuality = AVCaptureSessionPreset640x480
 
     // device orientation
-    var deviceOrientation = UIDeviceOrientation.portrait
+    var deviceOrientation = UIDeviceOrientation.portrait {
+        didSet {
+            switch deviceOrientation {
+            case .portrait,
+                 .portraitUpsideDown,
+                 .landscapeLeft,
+                 .landscapeRight:
+                setVideoOrientation()
+            default:
+                break
+            }
+        }
+    }
 
     // video orientation
     private var videoOrientation: AVCaptureVideoOrientation {
-        guard var result = AVCaptureVideoOrientation(rawValue: deviceOrientation.rawValue) else {
+        switch deviceOrientation {
+        case .portrait:
+            return AVCaptureVideoOrientation.portrait
+        case .portraitUpsideDown:
+            return AVCaptureVideoOrientation.portraitUpsideDown
+        case .landscapeLeft:
+            return AVCaptureVideoOrientation.landscapeRight
+        case .landscapeRight:
+            return AVCaptureVideoOrientation.landscapeLeft
+        default:
+            print("[WARN] unknown deviceOrientation: \(deviceOrientation.rawValue)")
             return AVCaptureVideoOrientation.portrait
         }
-        if deviceOrientation == UIDeviceOrientation.landscapeLeft {
-            result = AVCaptureVideoOrientation.landscapeRight
-        } else if deviceOrientation == UIDeviceOrientation.landscapeRight {
-            result = AVCaptureVideoOrientation.landscapeLeft
-        }
-        return result;
     }
 
 
