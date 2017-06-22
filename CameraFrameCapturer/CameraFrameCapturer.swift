@@ -41,7 +41,9 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
                  .portraitUpsideDown,
                  .landscapeLeft,
                  .landscapeRight:
-                setVideoOrientation()
+                sessionQueue.async {
+                    self.setVideoOrientation()
+                }
             default:
                 break
             }
@@ -60,7 +62,7 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
         case .landscapeRight:
             return AVCaptureVideoOrientation.landscapeLeft
         default:
-            print("[WARN] unknown deviceOrientation: \(deviceOrientation.rawValue)")
+            print("[WARN] unsupported deviceOrientation: \(deviceOrientation.rawValue)")
             return AVCaptureVideoOrientation.portrait
         }
     }
@@ -69,8 +71,11 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     // capturer delegate
     private var delegate: CameraFrameCapturerDelegate? = nil
 
-    // AV session instance of managing the whole capturing session
+    // AV capture session instance of managing the whole capturing session
     private let session = AVCaptureSession()
+
+    // Asynchronous queue to process AV capture session configuration and operations
+    private let sessionQueue = DispatchQueue(label: "SessionQueue")
 
     // AV capture connection instance of managing buffer orientation and mirroring
     private var connection: AVCaptureConnection? = nil
@@ -78,7 +83,8 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     // configuration state of instance
     private var isConfigured = false
 
-    private let context = CIContext()
+    // configuration state of instance
+    private var isAuthorized = false
 
 
     // convenience initializer
@@ -101,21 +107,25 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
 
     // check the permission for accessing camera
-    private func isPermissionGranted() -> Bool {
-        var isGranted = false
+    private func checkPermission() {
         switch AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) {
         case .authorized:
-            isGranted = true
+            isAuthorized = true
 
         case .notDetermined:
-            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo,
-                                          completionHandler: { success in isGranted = success })
+            // stop session queue from executing configuring operation
+            sessionQueue.suspend()
+            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { success in
+                self.isAuthorized = success
+                // resume session queue to execute configuring operation
+                self.sessionQueue.resume()
+            })
 
         case .denied,
              .restricted:
-            isGranted = false
+            isAuthorized = false
+
         }
-        return isGranted
     }
 
 
@@ -205,36 +215,50 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
     // configure capture device and session
     func configure() {
-        if !isConfigured && isPermissionGranted() {
-            guard setSessionInput() else {
+        guard !isConfigured else { return }
+
+        checkPermission()
+
+        sessionQueue.async {
+            guard self.isAuthorized else {
+                print("[Error] permission denied")
+                return
+            }
+
+            guard self.setSessionInput() else {
                 print("[Error] setSessionInput failed")
                 return
             }
 
-            guard setSessionOutput() else {
+            guard self.setSessionOutput() else {
                 print("[Error] setSessionOutput failed")
                 return
             }
 
             // set the capturing quality
-            session.sessionPreset = videoQuality
+            self.session.sessionPreset = self.videoQuality
 
+            self.isConfigured = true
             print("[Info] configure done !")
-            isConfigured = true
         }
     }
 
     // start capture session
     func start() {
-        if !isConfigured {
-            configure()
+        sessionQueue.async {
+            if self.isConfigured && !self.session.isRunning {
+                self.session.startRunning()
+            }
         }
-        session.startRunning()
     }
 
     // stop capture session
     func stop() {
-        session.stopRunning()
+        sessionQueue.async {
+            if self.isConfigured && self.session.isRunning {
+                self.session.stopRunning()
+            }
+        }
     }
 
     // AVCaptureVideoDataOutputSampleBufferDelegate delegate function

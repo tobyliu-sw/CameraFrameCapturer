@@ -22,6 +22,7 @@ class ViewController: UIViewController, CameraFrameCapturerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(deviceOrientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
 
         cameraFrameCapturer = CameraFrameCapturer(withDelegate: self)
+        cameraFrameCapturer?.configure()
     }
 
     override func didReceiveMemoryWarning() {
