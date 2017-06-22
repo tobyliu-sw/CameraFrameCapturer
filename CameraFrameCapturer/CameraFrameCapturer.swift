@@ -45,7 +45,17 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     }
 
     // video quality
-    var videoQuality = AVCaptureSessionPreset640x480
+    var videoQuality = AVCaptureSessionPreset640x480 {
+        didSet {
+            sessionQueue.async {
+                guard self.isConfigured else { return }
+
+                self.session.beginConfiguration()
+                self.session.sessionPreset = self.videoQuality
+                self.session.commitConfiguration()
+            }
+        }
+    }
 
     // device orientation
     var deviceOrientation = UIDeviceOrientation.portrait {

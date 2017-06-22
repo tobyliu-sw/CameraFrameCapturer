@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController, CameraFrameCapturerDelegate {
 
@@ -19,6 +20,14 @@ class ViewController: UIViewController, CameraFrameCapturerDelegate {
             cameraFrameCapturer?.cameraPosition = .back
         } else {
             cameraFrameCapturer?.cameraPosition = .front
+        }
+    }
+
+    @IBAction func changeQuality(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            cameraFrameCapturer?.videoQuality = AVCaptureSessionPreset640x480
+        } else {
+            cameraFrameCapturer?.videoQuality = AVCaptureSessionPreset1280x720
         }
     }
 

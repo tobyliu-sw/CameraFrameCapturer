@@ -33,6 +33,17 @@
                                     <action selector="switchCamera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BLL-jL-okG"/>
                                 </connections>
                             </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Jkn-3u-ocK">
+                                <rect key="frame" x="16" y="39" width="121" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Low"/>
+                                    <segment title="High"/>
+                                </segments>
+                                <connections>
+                                    <action selector="changeQuality:" destination="BYZ-38-t0r" eventType="valueChanged" id="Nlp-N0-75J"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
