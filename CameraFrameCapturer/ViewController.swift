@@ -14,6 +14,14 @@ class ViewController: UIViewController, CameraFrameCapturerDelegate {
 
     var cameraFrameCapturer: CameraFrameCapturer? = nil
 
+    @IBAction func switchCamera(_ sender: UIButton) {
+        if cameraFrameCapturer?.cameraPosition == .front {
+            cameraFrameCapturer?.cameraPosition = .back
+        } else {
+            cameraFrameCapturer?.cameraPosition = .front
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.

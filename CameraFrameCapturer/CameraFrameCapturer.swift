@@ -28,7 +28,21 @@ protocol CameraFrameCapturerDelegate {
 
 class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     // camera position
-    var cameraPosition = AVCaptureDevicePosition.front
+    var cameraPosition = AVCaptureDevicePosition.front {
+        didSet {
+            sessionQueue.async {
+                guard self.isConfigured else { return }
+
+                guard self.setSessionInput() else {
+                    print("[Error] setSessionInput failed")
+                    return
+                }
+
+                self.setVideoOrientation()
+                self.setVideoMirrored()
+            }
+        }
+    }
 
     // video quality
     var videoQuality = AVCaptureSessionPreset640x480
@@ -77,8 +91,8 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     // Asynchronous queue to process AV capture session configuration and operations
     private let sessionQueue = DispatchQueue(label: "SessionQueue")
 
-    // AV capture connection instance of managing buffer orientation and mirroring
-    private var connection: AVCaptureConnection? = nil
+    // AV capture output instance for managing orientation and mirroring of video frames
+    private var captureOutput: AVCaptureVideoDataOutput? = nil
 
     // configuration state of instance
     private var isConfigured = false
@@ -131,16 +145,20 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
     // set the orientation of the captured video buffer
     private func setVideoOrientation() {
-        if connection?.isVideoOrientationSupported ?? false {
-            connection!.videoOrientation = videoOrientation
+        if let connection = captureOutput?.connection(withMediaType: AVFoundation.AVMediaTypeVideo) {
+            if connection.isVideoOrientationSupported {
+                connection.videoOrientation = videoOrientation
+            }
         }
     }
 
 
     // set the mirroring of the captured video buffer
     private func setVideoMirrored() {
-        if connection?.isVideoMirroringSupported ?? false {
-            connection!.isVideoMirrored = cameraPosition == .front
+        if let connection = captureOutput?.connection(withMediaType: AVFoundation.AVMediaTypeVideo) {
+            if connection.isVideoMirroringSupported {
+                connection.isVideoMirrored = cameraPosition == .front
+            }
         }
     }
 
@@ -189,21 +207,17 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
         session.commitConfiguration()
 
-        // set video mirroring for front camera
-        setVideoMirrored()
-
         return true
     }
 
     // set output device
     private func setSessionOutput() -> Bool {
-        let captureOutput = AVCaptureVideoDataOutput()
-        captureOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "VideoDataOutputQueue"))
+        captureOutput = AVCaptureVideoDataOutput()
+        captureOutput?.setSampleBufferDelegate(self, queue: DispatchQueue(label: "VideoDataOutputQueue"))
 
-        if session.canAddOutput(captureOutput) {
-            session.addOutput(captureOutput)
+        if session.canAddOutput(captureOutput!) {
+            session.addOutput(captureOutput!)
 
-            connection = captureOutput.connection(withMediaType: AVFoundation.AVMediaTypeVideo)
             setVideoOrientation()
             setVideoMirrored()
 
@@ -215,11 +229,15 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
     // configure capture device and session
     func configure() {
-        guard !isConfigured else { return }
+        sessionQueue.async {
+            guard !self.isConfigured else { return }
 
-        checkPermission()
+            self.checkPermission()
+        }
 
         sessionQueue.async {
+            guard !self.isConfigured else { return }
+
             guard self.isAuthorized else {
                 print("[Error] permission denied")
                 return
