@@ -33,6 +33,11 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
             sessionQueue.async {
                 guard self.isConfigured else { return }
 
+                let sessionIsRunning = self.session.isRunning
+                if sessionIsRunning {
+                    self.session.stopRunning()
+                }
+
                 guard self.setSessionInput() else {
                     print("[Error] setSessionInput failed")
                     return
@@ -40,6 +45,10 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
                 self.setVideoOrientation()
                 self.setVideoMirrored()
+
+                if sessionIsRunning {
+                    self.session.startRunning()
+                }
             }
         }
     }
@@ -60,15 +69,29 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     // device orientation
     var deviceOrientation = UIDeviceOrientation.portrait {
         didSet {
+            guard (deviceOrientation != oldValue) else { return }
+
             switch deviceOrientation {
             case .portrait,
                  .portraitUpsideDown,
                  .landscapeLeft,
                  .landscapeRight:
                 sessionQueue.async {
+                    guard self.isConfigured else { return }
+
+                    let sessionIsRunning = self.session.isRunning
+                    if sessionIsRunning {
+                        self.session.stopRunning()
+                    }
+
                     self.setVideoOrientation()
+
+                    if sessionIsRunning {
+                        self.session.startRunning()
+                    }
                 }
             default:
+                deviceOrientation = oldValue
                 break
             }
         }
