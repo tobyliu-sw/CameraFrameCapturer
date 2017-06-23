@@ -68,7 +68,7 @@ class ViewController: UIViewController, CameraFrameCapturerDelegate {
 
     func didCaptured(image: UIImage) {
         // UIImageView can only be updated in main thread
-        DispatchQueue.main.async { [unowned self] in
+        DispatchQueue.main.async {
             self.imageView.image = image
         }
     }

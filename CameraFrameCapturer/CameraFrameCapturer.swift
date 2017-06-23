@@ -21,7 +21,7 @@ import UIKit
 import AVFoundation
 
 
-protocol CameraFrameCapturerDelegate {
+protocol CameraFrameCapturerDelegate: class {
     func didCaptured(image:UIImage)
 }
 
@@ -115,8 +115,8 @@ class CameraFrameCapturer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     }
 
 
-    // capturer delegate
-    private var delegate: CameraFrameCapturerDelegate? = nil
+    // capturer delegate (set to weak to avoid Strong Reference Cycle)
+    weak private var delegate: CameraFrameCapturerDelegate? = nil
 
     // AV capture session instance of managing the whole capturing session
     private let session = AVCaptureSession()
