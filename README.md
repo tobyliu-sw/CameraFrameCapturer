@@ -1,6 +1,6 @@
 ## CameraFrameCapturer
 
-[CameraFrameCapturer](https://github.com/toby-liu-os/CameraFrameCapturer) is an iOS app which contains a swift class module CameraFrameCapturer.swift for capturing video frames from camera, converting the frames to UIImage images, and sent the images to delegate instances.
+[CameraFrameCapturer](https://github.com/tobyliu-sw/CameraFrameCapturer) is an iOS app which contains a swift class module CameraFrameCapturer.swift for capturing video frames from camera, converting the frames to UIImage images, and sent the images to delegate instances.
 
 ### System environment
 
